@@ -20,7 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
+      <body className="font-mono">
         <Providers>{children}</Providers> {/* ✅ Wrap with Providers */}
       </body>
     </html>

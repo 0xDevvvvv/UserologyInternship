@@ -1,7 +1,8 @@
 import React from 'react'
-import News from './news'
-import Weather from './weather'
-import Crypto from './crypto'
+import News from './components/news'
+import Weather from './components/weather'
+import Crypto from './components/crypto'
+
 
 export default function page() {
   return (
