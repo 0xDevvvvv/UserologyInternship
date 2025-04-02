@@ -5,13 +5,15 @@ import axios from "axios";
 
 export const fetchWeather = createAsyncThunk(
   "weather/fetchWeather",
-  async (city) => {
-    const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERKEY}&units=metric`
-    console.log(API_URL)
-    const response = await axios.get(
-        API_URL
-    );
-    return response.data;
+  async (cities) => {
+    const res = {}; // Ensure res is a plain object
+    await Promise.all(cities.map(async (city) => {
+      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERKEY}&units=metric`;
+      const response = await axios.get(API_URL);
+      res[city] = response.data;
+    }));
+    console.log(res)
+    return res;
   }
 );
 

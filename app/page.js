@@ -1,15 +1,16 @@
 import React from 'react'
 import News from './components/news'
-import Weather from './components/weather'
+import Weather from './components/ThreeWeather'
 import Crypto from './components/crypto'
+
 
 
 export default function page() {
   return (
     <div>
-      <News/>
       <Weather/>
-      <Crypto/>
+      <Crypto/> 
+      <News/>
     </div>
   )
 }
