@@ -6,11 +6,32 @@ import { fetchWeather } from "../redux/slices/weatherSlice";
 import WeatherWidget from "./WeatherWidget";
 import { useRouter } from "next/navigation";
 
+const getBackgroundClass = (weatherCondition) => {
+  switch (weatherCondition?.toLowerCase()) {
+    case "clear":
+      return "bg-blue-400"; // Clear skies
+    case "clouds":
+      return "bg-gray-400"; // Cloudy
+    case "rain":
+      return "bg-blue-600"; // Rainy
+    case "snow":
+      return "bg-gray-200"; // Snowy
+    case "thunderstorm":
+      return "bg-indigo-700"; // Stormy
+    case "drizzle":
+      return "bg-blue-300"; // Drizzle
+    case "mist":
+    case "fog":
+      return "bg-gray-300"; // Mist/Fog
+    default:
+      return "bg-gray-50"; // Default background
+  }
+};
+
 const Weather = () => {
-  const router = useRouter()
-  const [cities,setCities] = useState(["New York","Tokyo","Denver"])
-  const [search,setSearch] = useState("")
-  const [weatherDetails,setWeatherDetails] = useState({})
+  const router = useRouter();
+  const [cities, setCities] = useState(["New York", "Tokyo", "Denver"]);
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.weather);
 
@@ -18,30 +39,59 @@ const Weather = () => {
     dispatch(fetchWeather(cities));
   }, [dispatch]);
 
+  const firstCityWeather = data[cities[0]]?.weather?.[0]?.main || "default";
+  const bgClass = getBackgroundClass(firstCityWeather);
 
   return (
-    <div>
-      <div className="mt-4 mx-2 text-center sm:text-2xl text-xl">
-        Weather updates for
-        
-        <input className="mx-5 max-w-1/4 relative text-center text-xl border rounded-md" type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder={"New York,Tokyo,Denver"}></input> 
-        <button onClick={()=>{dispatch(fetchWeather(search.split(',')));setCities(search.split(','));console.log(cities)}} className="hover:cursor-pointer">🔍</button>
-      </div>
-      
-      <div className="flex items-center justify-center cols-3 gap-3 my-4">
-      {cities.map((city) => (
-        <div onClick={()=>router.push('/weather/'+city)} key={city} className="p-5 bg-amber-50 rounded-lg">
-          <h3 className="text-center underline hover:cursor-pointer">{city}</h3>
-          {loading && <p>Loading...</p>}
-          {error && <p>Error: {error}</p>}
-          {data[city]?.main && 
-            ( 
-              <p>Temperature: {data[city].main.temp}K 
-              <WeatherWidget data={data[city]} city={city} error={error} /></p> 
-            )
-          }
-          
+    <div className={`min-h-screen transition-colors duration-500 ${bgClass} p-6`}>
+      {/* Search Section */}
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl mt-5 font-semibold text-white mb-6">
+          Weather Updates
+        </h2>
+        <div className="flex justify-center items-center">
+          <input
+            className="w-full sm:w-3/4 p-3 text-lg text-gray-700 bg-white bg-opacity-80 rounded-l-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Enter cities (e.g., New York, Tokyo, Denver)"
+          />
+          <button
+            onClick={() => {
+              const cityArray = search.split(",").map((city) => city.trim());
+              dispatch(fetchWeather(cityArray));
+              setCities(cityArray);
+            }}
+            className="p-3 bg-blue-500 text-white rounded-r-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            🔍
+          </button>
         </div>
+      </div>
+
+      {/* Weather Cards Section */}
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {cities.map((city) => (
+          <div
+            key={city}
+            onClick={() => router.push("/weather/" + city)}
+            className="p-6 bg-white bg-opacity-30 backdrop-blur-lg rounded-xl shadow-lg transform transition duration-500 hover:scale-105 cursor-pointer"
+          >
+            <h3 className="text-2xl font-bold text-black text-center mb-4">
+              {city}
+            </h3>
+            {loading && <p className="text-white text-center">Loading...</p>}
+            {error && <p className="text-red-500 text-center">Error: {error}</p>}
+            {data[city]?.main && (
+              <div className="text-center">
+                <p className="text-4xl font-semibold text-black">
+                  {Math.round(data[city].main.temp)}°C
+                </p>
+                <WeatherWidget data={data[city]} city={city} error={error} />
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>

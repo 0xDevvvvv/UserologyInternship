@@ -2,6 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { Toaster } from "react-hot-toast";
+import WebSocketHandler from "./components/Notifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +25,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="font-mono">
         <Navbar/>
-        <Providers>{children}</Providers> {/* ✅ Wrap with Providers */}
+        <Providers>
+          <Toaster position="top-right" />
+          <WebSocketHandler />
+          {children}
+        </Providers> {/* ✅ Wrap with Providers */}
       </body>
     </html>
   );
