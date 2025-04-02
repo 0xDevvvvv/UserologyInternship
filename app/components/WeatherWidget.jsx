@@ -16,7 +16,7 @@ import {
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 
-export default function WeatherWidget({data},city,error) {
+export default function WeatherWidget({data,city},error) {
   const [useCelsius, setCelsius] = useState(true);
     console.log(city)
   if (error) return <div>Failed to load weather data</div>;

@@ -8,7 +8,7 @@ export const fetchWeather = createAsyncThunk(
   async (cities) => {
     const res = {}; // Ensure res is a plain object
     await Promise.all(cities.map(async (city) => {
-      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERKEY}&units=metric`;
+      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERKEY}`;
       const response = await axios.get(API_URL);
       res[city] = response.data;
     }));
@@ -25,9 +25,11 @@ const weatherSlice = createSlice({
     builder
       .addCase(fetchWeather.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchWeather.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.data = action.payload;
       })
       .addCase(fetchWeather.rejected, (state, action) => {
