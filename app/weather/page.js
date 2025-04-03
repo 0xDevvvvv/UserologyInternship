@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeather } from "../redux/slices/weatherSlice";
-import WeatherWidget from "./WeatherWidget";
+import WeatherWidget from "../components/WeatherWidget";
 import { useRouter } from "next/navigation";
 import { addNotification } from "../redux/slices/websocketSlice";
 
@@ -25,13 +25,13 @@ const getBackgroundClass = (weatherCondition) => {
     case "fog":
       return "bg-gray-300"; // Mist/Fog
     default:
-      return "bg-gray-50"; // Default background
+      return "bg-gray-400"; // Default background
   }
 };
 
 const Weather = () => {
   const router = useRouter();
-  const [cities, setCities] = useState(["New York", "Tokyo", "Denver"]);
+  const [cities, setCities] = useState([]);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.weather);
@@ -46,6 +46,30 @@ const Weather = () => {
   return (
     <div className={`min-h-screen transition-colors duration-500 ${bgClass} p-6`}>
       {/* Search Section */}
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-3xl mt-5 font-semibold text-white mb-6">
+          Weather Updates
+        </h2>
+        <div className="flex justify-center items-center">
+          <input
+            className="w-full sm:w-3/4 p-3 text-lg text-gray-700 bg-white bg-opacity-80 rounded-l-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Enter cities (e.g., New York, Tokyo, Denver)"
+          />
+          <button
+            onClick={() => {
+              const cityArray = search.split(",").map((city) => city.trim());
+              dispatch(fetchWeather(cityArray));
+              setCities(cityArray);
+            }}
+            className="p-3 bg-blue-500 text-white rounded-r-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            🔍
+          </button>
+        </div>
+      </div>
 
       {/* Weather Cards Section */}
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

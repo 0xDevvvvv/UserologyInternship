@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCryptoData } from "../redux/slices/cryptoSlice";
 import { addNotification } from "../redux/slices/websocketSlice";
@@ -9,16 +9,18 @@ import Image from "next/image";
 
 const Crypto = () => {
   const dispatch = useDispatch();
+  const [search,setSearch] = useState("")
+  const [crypto,setCrypto] = useState("")
   const { data, loading, error } = useSelector((state) => state.crypto);
   const { prices, increase } = useSelector((state) => state.websocket);
   const router = useRouter();
 
   useEffect(() => {
-    dispatch(fetchCryptoData("bitcoin,ethereum,cardano"));
+    dispatch(fetchCryptoData(crypto));
   }, [dispatch]);
 
   useEffect(() => {
-    const API_URL = `wss://ws.coincap.io/prices?assets=bitcoin,ethereum,cardano`;
+    const API_URL = `wss://ws.coincap.io/prices?assets=${crypto}`;
     dispatch({ type: "websocket/connect", payload: { url: API_URL } });
 
     return () => {
@@ -29,16 +31,36 @@ const Crypto = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white py-8">
      
-      <h2 className="text-center text-3xl font-bold mb-8 text-gray-100">
-        🚀 Crypto Prices
-        
-      </h2>
+      <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl mt-5 font-semibold text-white mb-6">
+                Crypto Updates
+              </h2>
+              <div className="flex justify-center items-center">
+                <input
+                  className="w-full sm:w-3/4 p-3 text-lg text-gray-700 bg-white bg-opacity-80 rounded-l-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Enter crypto('bitcoin,ethereum')"
+                />
+                <button
+                  onClick={() => {
+                    dispatch(fetchCryptoData(search));
+                    setCrypto(search);
+                  }}
+                  className="p-3 bg-blue-500 text-white rounded-r-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  🔍
+                </button>
+              </div>
+            </div>
+      
 
       {loading && <p className="text-center text-lg text-gray-400">Loading...</p>}
       {error && <p className="text-center text-lg text-red-500">Error: {error}</p>}
 
       {data && (
-        <div className="grid sm:grid-cols-3 grid-cols-1 gap-6 max-w-6xl mx-auto px-4">
+        <div className="grid sm:grid-cols-3 grid-cols-1 gap-6 max-w-6xl mt-5 mx-auto px-4">
           {Object.entries(data).map(([key, value]) => (
             <div
               key={key}

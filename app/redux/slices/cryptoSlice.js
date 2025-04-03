@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL =
-  "https://api.coingecko.com/api/v3/simple/price?ids=cardano,ethereum,bitcoin&vs_currencies=usd&include_market_cap=true&include_24hr_change=true";
 
 // Async action to fetch cryptocurrency data
-export const fetchCryptoData = createAsyncThunk("crypto/fetchCryptoData", async () => {
+export const fetchCryptoData = createAsyncThunk("crypto/fetchCryptoData", async (id) => {
+  const API_URL =
+  `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true`;
+
   try {
     const response = await axios.get(API_URL);
     console.log("asking for crypto data")
