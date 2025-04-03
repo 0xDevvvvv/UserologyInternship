@@ -90,7 +90,7 @@ const Weather = () => {
             {data[city]?.main && (
               <div className="text-center">
                 <p className="text-4xl font-semibold text-black">
-                  {Math.round(data[city].main.temp)}°C
+                  {Math.round(data[city].main.temp)}°K
                 </p>
                 <WeatherWidget data={data[city]} city={city} error={error} />
                 {/* Add to Favorites Button */}

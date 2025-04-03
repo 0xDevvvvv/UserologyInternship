@@ -39,7 +39,7 @@ const WebSocketHandler = () => {
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={notif.icon || "/default-crypto-icon.png"}
+                    src={"globe.svg"}
                     alt="Crypto Icon"
                   />
                 </div>
@@ -78,7 +78,7 @@ const WebSocketHandler = () => {
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={notif.icon || "/default-weather-icon.png"}
+                    src={"globe.svg"}
                     alt="Weather Icon"
                   />
                 </div>

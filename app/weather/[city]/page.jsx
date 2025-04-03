@@ -31,7 +31,7 @@ const CityWeather = () => {
 
       <div className="mt-4 p-6 bg-white rounded-lg shadow-lg">
         <p className="text-2xl font-semibold">
-          🌡 Temperature: {Math.round(weatherData.main.temp)}°C
+          🌡 Temperature: {Math.round(weatherData.main.temp)}°K
         </p>
         <p>🌬 Wind Speed: {weatherData.wind.speed} m/s</p>
         <p>💧 Humidity: {weatherData.main.humidity}%</p>
