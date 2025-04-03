@@ -114,8 +114,7 @@ Then, open **[http://localhost:3000](http://localhost:3000)** in your browser.
 ## 📌 **Features Implemented**  
 ✅ **Dynamic Routing:** `/crypto/:name` & `/weather/:city`  
 ✅ **Real-time WebSocket updates**  
-✅ **Favorites management** (Crypto & Cities)  
-✅ **Auto-refresh data every 60 seconds**  
+✅ **Favorites management** (Crypto & Cities)   
 ✅ **Graceful handling of API errors**  
 
 ---
