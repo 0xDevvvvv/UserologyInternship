@@ -34,6 +34,7 @@ const cryptoSlice = createSlice({
       .addCase(fetchCryptoData.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
+        console.log(action.payload)
       })
       .addCase(fetchCryptoData.rejected, (state, action) => {
         state.loading = false;

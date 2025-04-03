@@ -6,6 +6,7 @@ import { fetchWeather } from "../redux/slices/weatherSlice";
 import WeatherWidget from "../components/WeatherWidget";
 import { useRouter } from "next/navigation";
 import { addNotification } from "../redux/slices/websocketSlice";
+import { toggleFavoriteCity } from "../redux/slices/favoriteSlice";
 
 const getBackgroundClass = (weatherCondition) => {
   switch (weatherCondition?.toLowerCase()) {
@@ -33,6 +34,7 @@ const Weather = () => {
   const router = useRouter();
   const [cities, setCities] = useState([]);
   const [search, setSearch] = useState("");
+  const favoriteCities = useSelector((state) => state.favorites.cities);
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.weather);
 
@@ -91,8 +93,19 @@ const Weather = () => {
                   {Math.round(data[city].main.temp)}°C
                 </p>
                 <WeatherWidget data={data[city]} city={city} error={error} />
+                {/* Add to Favorites Button */}
+                <button
+                    className={`mt-4 px-4 py-2 rounded-lg transition-all ${
+                    favoriteCities.includes(city.toLowerCase())
+                        ? "bg-yellow-400 text-black"
+                        : "bg-gray-600 text-white"
+                    }`}
+                    onClick={() => dispatch(toggleFavoriteCity(city.toLowerCase()))}
+                >
+                    {favoriteCities.includes(city.toLowerCase()) ? "⭐ Favorited" : "☆ Add to Favorites"}
+                </button>
                 <button 
-                  className="bg-red-300 rounded-lg px-2"
+                  className="bg-red-300 rounded-lg p-2"
                   onClick={()=> {
                         dispatch(addNotification({
                           type: "weather_alert",

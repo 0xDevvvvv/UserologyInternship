@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toggleFavoriteCrypto } from "../redux/slices/favoriteSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCryptoData } from "../redux/slices/cryptoSlice";
 import { addNotification } from "../redux/slices/websocketSlice";
@@ -10,23 +11,29 @@ import Image from "next/image";
 const Crypto = () => {
   const dispatch = useDispatch();
   const [search,setSearch] = useState("")
-  const [crypto,setCrypto] = useState("")
+  const [crypto,setCrypto] = useState("bitcoin")
   const { data, loading, error } = useSelector((state) => state.crypto);
   const { prices, increase } = useSelector((state) => state.websocket);
+  const favoriteCryptos = useSelector((state) => state.favorites.cryptos);
   const router = useRouter();
 
-  useEffect(() => {
-    dispatch(fetchCryptoData(crypto));
-  }, [dispatch]);
-
-  useEffect(() => {
+  const livePrice = () =>  {
     const API_URL = `wss://ws.coincap.io/prices?assets=${crypto}`;
     dispatch({ type: "websocket/connect", payload: { url: API_URL } });
 
     return () => {
       dispatch({ type: "websocket/disconnect" });
     };
+  } 
+
+  useEffect(() => {
+    dispatch(fetchCryptoData(crypto));
   }, [dispatch]);
+
+  useEffect(() => {
+    livePrice()
+  }, [dispatch]);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white py-8">
@@ -47,6 +54,7 @@ const Crypto = () => {
                   onClick={() => {
                     dispatch(fetchCryptoData(search));
                     setCrypto(search);
+                    livePrice()
                   }}
                   className="p-3 bg-blue-500 text-white rounded-r-full shadow-lg hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
@@ -107,6 +115,18 @@ const Crypto = () => {
               <p className="text-gray-300">
                 🏦 Market Cap: <span className="font-semibold">${value.usd_market_cap.toFixed(2)}</span>
               </p>
+              {/* Add to Favorites Button */}
+                            <button
+                              className={`mt-4 px-4 py-2 rounded-lg transition-all ${
+                                favoriteCryptos.includes(key.toLowerCase())
+                                  ? "bg-yellow-400 text-black"
+                                  : "bg-gray-600 text-white"
+                              }`}
+                              onClick={() => dispatch(toggleFavoriteCrypto(key.toLowerCase()))}
+                            >
+                              {favoriteCryptos.includes(key.toLowerCase()) ? "⭐ Favorited" : "☆ Add to Favorites"}
+                            </button>
+              
             </div>
           ))}
         </div>

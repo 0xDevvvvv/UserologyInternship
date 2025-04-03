@@ -1,5 +1,5 @@
 "use client";
-
+import { toggleFavoriteCrypto } from "../redux/slices/favoriteSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCryptoData } from "../redux/slices/cryptoSlice";
@@ -11,6 +11,7 @@ const Crypto = () => {
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector((state) => state.crypto);
   const { prices, increase } = useSelector((state) => state.websocket);
+  const favoriteCryptos = useSelector((state) => state.favorites.cryptos);
   const router = useRouter();
 
   useEffect(() => {
@@ -85,6 +86,17 @@ const Crypto = () => {
               <p className="text-gray-300">
                 🏦 Market Cap: <span className="font-semibold">${value.usd_market_cap.toFixed(2)}</span>
               </p>
+              {/* Add to Favorites Button */}
+              <button
+                className={`mt-4 px-4 py-2 rounded-lg transition-all ${
+                  favoriteCryptos.includes(key.toLowerCase())
+                    ? "bg-yellow-400 text-black"
+                    : "bg-gray-600 text-white"
+                }`}
+                onClick={() => dispatch(toggleFavoriteCrypto(key.toLowerCase()))}
+              >
+                {favoriteCryptos.includes(key.toLowerCase()) ? "⭐ Favorited" : "☆ Add to Favorites"}
+              </button>
             </div>
           ))}
         </div>
